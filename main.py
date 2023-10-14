@@ -20,16 +20,23 @@ def downsample_point_cloud(pc, voxel_size):
     return pc.voxel_down_sample(voxel_size=voxel_size)
 
 
+# Color Preservation in Upsampling
 def upsample_point_cloud(pc):
     points = np.asarray(pc.points)
+    colors = np.asarray(pc.colors)
     new_points = []
+    new_colors = []
     for i in range(len(points) - 1):
-        p1, p2 = points[i], points[i + 1]
+        p1, p2 = points[i], points[i+1]
+        c1, c2 = colors[i], colors[i+1]
         interpolated_points = np.linspace(p1, p2, num=2, endpoint=False)
+        interpolated_colors = np.linspace(c1, c2, num=2, endpoint=False)
         new_points.extend(interpolated_points)
+        new_colors.extend(interpolated_colors)
 
     new_pcd = o3d.geometry.PointCloud()
     new_pcd.points = o3d.utility.Vector3dVector(new_points)
+    new_pcd.colors = o3d.utility.Vector3dVector(new_colors)
     return new_pcd
 
 
